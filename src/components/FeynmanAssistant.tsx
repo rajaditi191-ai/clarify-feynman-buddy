@@ -24,6 +24,13 @@ interface ConceptAnalysis {
     description: string;
     answer: string;
   }>;
+  videoExplanations: Array<{
+    title: string;
+    videoUrl: string;
+    description: string;
+    answer: string;
+    duration: string;
+  }>;
 }
 
 export const FeynmanAssistant = () => {
@@ -65,6 +72,36 @@ export const FeynmanAssistant = () => {
         ];
       };
 
+      const getVideoExplanations = () => {
+        if (concept.toLowerCase().includes('photosynthesis')) {
+          return [
+            {
+              title: "Photosynthesis Explained Simply",
+              videoUrl: "https://www.youtube.com/embed/sQK3Yr4Sc_k",
+              description: "Watch how photosynthesis works in simple terms",
+              answer: "This video breaks down the complex process of photosynthesis into easy-to-understand steps, showing how plants make their own food using sunlight, water, and carbon dioxide.",
+              duration: "5:32"
+            }
+          ];
+        }
+        return [
+          {
+            title: "The Feynman Technique Explained",
+            videoUrl: "https://www.youtube.com/embed/FrNqSLPaZLc",
+            description: "Learn the four steps of the Feynman learning method",
+            answer: "The Feynman Technique is a powerful learning method that involves: 1) Choosing a concept to learn, 2) Teaching it to someone else in simple terms, 3) Identifying gaps in your knowledge, and 4) Going back to study and simplify further.",
+            duration: "8:15"
+          },
+          {
+            title: "How Your Brain Learns New Information",
+            videoUrl: "https://www.youtube.com/embed/O96fE1E-rf8",
+            description: "Understanding the science behind learning and memory",
+            answer: "Your brain forms new neural connections when learning. The more you practice and review, the stronger these connections become. This is why the Feynman technique works - it forces your brain to actively process and connect information.",
+            duration: "6:45"
+          }
+        ];
+      };
+
       setAnalysis({
         simplifiedExplanation: `Let me explain ${concept} in simple terms:\n\nImagine you're explaining this to a 10-year-old. ${concept} is like a puzzle piece that fits into a bigger picture. The key is to break it down into smaller, understandable parts that connect to things we already know.\n\nThink of it as building blocks - each part supports the next, creating a solid foundation of understanding.`,
         complexWords: [
@@ -79,7 +116,8 @@ export const FeynmanAssistant = () => {
           "Practice explaining without jargon",
           "Test understanding by teaching others"
         ],
-        visualExplanations: getVisualExplanations()
+        visualExplanations: getVisualExplanations(),
+        videoExplanations: getVideoExplanations()
       });
       setIsAnalyzing(false);
     }, 2000);
@@ -213,6 +251,50 @@ export const FeynmanAssistant = () => {
                           Answer
                         </Badge>
                         <p className="text-foreground leading-relaxed">{visual.answer}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-learning">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-success">
+                <MessageCircle className="h-5 w-5" />
+                Video Explanations & Answers
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {analysis.videoExplanations.map((video, index) => (
+                  <div key={index} className="border border-border rounded-lg p-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-lg font-semibold text-foreground">{video.title}</h4>
+                      <Badge variant="secondary" className="bg-success/10 text-success">
+                        {video.duration}
+                      </Badge>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <div className="relative w-full h-48 rounded-lg overflow-hidden shadow-learning">
+                          <iframe
+                            src={video.videoUrl}
+                            title={video.title}
+                            className="w-full h-full"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                        <p className="text-sm text-muted-foreground">{video.description}</p>
+                      </div>
+                      <div className="space-y-3">
+                        <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+                          Video Explanation
+                        </Badge>
+                        <p className="text-foreground leading-relaxed">{video.answer}</p>
                       </div>
                     </div>
                   </div>
