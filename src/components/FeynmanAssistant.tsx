@@ -7,6 +7,9 @@ import { BookOpen, Brain, Calendar, MessageCircle, Lightbulb, Search } from "luc
 import heroImage from "@/assets/hero-books.jpg";
 import aiTutorImage from "@/assets/ai-tutor.jpg";
 import scheduleImage from "@/assets/study-schedule.jpg";
+import photosynthesisDiagram from "@/assets/photosynthesis-diagram.jpg";
+import learningConceptDiagram from "@/assets/learning-concept-diagram.jpg";
+import stepByStepDiagram from "@/assets/step-by-step-diagram.jpg";
 
 interface ConceptAnalysis {
   simplifiedExplanation: string;
@@ -15,6 +18,12 @@ interface ConceptAnalysis {
     definition: string;
   }>;
   keyPoints: string[];
+  visualExplanations: Array<{
+    title: string;
+    image: string;
+    description: string;
+    answer: string;
+  }>;
 }
 
 export const FeynmanAssistant = () => {
@@ -29,6 +38,33 @@ export const FeynmanAssistant = () => {
     setIsAnalyzing(true);
     // Simulate AI analysis - in a real app, this would call an AI API
     setTimeout(() => {
+      const getVisualExplanations = () => {
+        if (concept.toLowerCase().includes('photosynthesis')) {
+          return [
+            {
+              title: "Photosynthesis Process",
+              image: photosynthesisDiagram,
+              description: "How plants convert sunlight into energy",
+              answer: "Plants use chloroplasts to capture sunlight, combine it with water and CO2 to create glucose and oxygen. The equation is: 6CO2 + 6H2O + light energy → C6H12O6 + 6O2"
+            }
+          ];
+        }
+        return [
+          {
+            title: "Learning Process Visualization",
+            image: learningConceptDiagram,
+            description: "How your brain connects new information",
+            answer: "Your brain creates neural pathways by linking new concepts to existing knowledge, forming a web of understanding that strengthens with practice and repetition."
+          },
+          {
+            title: "Step-by-Step Understanding",
+            image: stepByStepDiagram,
+            description: "Breaking down complex ideas into manageable parts",
+            answer: "The Feynman Technique works by: 1) Choose a concept, 2) Explain it simply, 3) Identify gaps, 4) Review and simplify further."
+          }
+        ];
+      };
+
       setAnalysis({
         simplifiedExplanation: `Let me explain ${concept} in simple terms:\n\nImagine you're explaining this to a 10-year-old. ${concept} is like a puzzle piece that fits into a bigger picture. The key is to break it down into smaller, understandable parts that connect to things we already know.\n\nThink of it as building blocks - each part supports the next, creating a solid foundation of understanding.`,
         complexWords: [
@@ -42,7 +78,8 @@ export const FeynmanAssistant = () => {
           "Connect new concepts to existing knowledge",
           "Practice explaining without jargon",
           "Test understanding by teaching others"
-        ]
+        ],
+        visualExplanations: getVisualExplanations()
       });
       setIsAnalyzing(false);
     }, 2000);
@@ -147,6 +184,40 @@ export const FeynmanAssistant = () => {
                   </li>
                 ))}
               </ul>
+            </CardContent>
+          </Card>
+
+          <Card className="card-learning">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-warning">
+                <Lightbulb className="h-5 w-5" />
+                Visual Explanations & Answers
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {analysis.visualExplanations.map((visual, index) => (
+                  <div key={index} className="border border-border rounded-lg p-4 space-y-4">
+                    <h4 className="text-lg font-semibold text-foreground">{visual.title}</h4>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <img 
+                          src={visual.image} 
+                          alt={visual.title}
+                          className="w-full h-48 object-cover rounded-lg shadow-learning"
+                        />
+                        <p className="text-sm text-muted-foreground mt-2">{visual.description}</p>
+                      </div>
+                      <div className="space-y-3">
+                        <Badge variant="outline" className="bg-warning/10 text-warning border-warning/20">
+                          Answer
+                        </Badge>
+                        <p className="text-foreground leading-relaxed">{visual.answer}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
